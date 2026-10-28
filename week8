@@ -1,0 +1,294 @@
+svm 
+
+from sklearn.datasets import load_iris 
+from sklearn.model_selection import train_test_split 
+from sklearn.svm import SVC 
+from sklearn.metrics import accuracy_score 
+import numpy as np 
+import matplotlib.pyplot as plt 
+iris = load_iris() 
+X, y = iris.data, iris.target 
+# TC1: Linearly separable data 
+X1, y1 = X[y != 2], y[y != 2] 
+model1 = SVC(kernel='linear') 
+model1.fit(X1, y1) 
+print("TC1 Accuracy:", accuracy_score(y1, model1.predict(X1))) 
+# TC2: Two-class dataset 
+X_train, X_test, y_train, y_test = train_test_split( 
+X1, y1, test_size=0.2, random_state=42 
+) 
+model2 = SVC(kernel='linear') 
+model2.fit(X_train, y_train) 
+print("TC2 Accuracy:", accuracy_score(y_test, model2.predict(X_test))) 
+# TC3: Test point near margin 
+model3 = SVC(kernel='linear') 
+model3.fit(X1, y1) 
+point = X1[0].reshape(1, -1) 
+print("TC3 Predicted class:", model3.predict(point)[0]) 
+print("TC3 Decision value:", model3.decision_function(point)[0]) 
+# TC4: Overlapping classes 
+Xu = X1 + np.random.normal(0, 0.8, X1.shape) 
+model4 = SVC(kernel='linear') 
+model4.fit(Xu, y1) 
+print("TC4 Accuracy:", accuracy_score(y1, model4.predict(Xu))) 
+# TC5: Single-class data 
+X5, y5 = X[y == 0], y[y == 0] 
+try: 
+model5 = SVC(kernel='linear') 
+model5.fit(X5, y5) 
+except ValueError: 
+print("TC5: SVM needs at least two classes.") 
+# Graph using two features 
+Xg = X1[:, [0, 1]] 
+graph_model = SVC(kernel='linear') 
+graph_model.fit(Xg, y1) 
+plt.scatter(Xg[y1 == 0, 0], Xg[y1 == 0, 1], label="Class 0") 
+plt.scatter(Xg[y1 == 1, 0], Xg[y1 == 1, 1], label="Class 1") 
+xx = np.linspace(Xg[:, 0].min(), Xg[:, 0].max(), 100) 
+w = graph_model.coef_[0] 
+b = graph_model.intercept_[0] 
+yy = -(w[0] * xx + b) / w[1] 
+plt.plot(xx, yy, label="Hyperplane") 
+ 
+plt.xlabel("Sepal Length") 
+plt.ylabel("Sepal Width") 
+plt.title("SVM Classification") 
+plt.legend() 
+plt.grid() 
+plt.show() 
+
+
+
+
+
+BFS DFS 
+
+from collections import deque 
+def bfs(graph, start): 
+    visited = set() 
+    queue = deque([start]) 
+    visited.add(start) 
+    traversal = [] 
+    while queue: 
+        node = queue.popleft() 
+        traversal.append(node) 
+        for neighbor in graph[node]: 
+            if neighbor not in visited: 
+                visited.add(neighbor) 
+                queue.append(neighbor) 
+    return traversal 
+def dfs(graph, start): 
+    visited = set() 
+    traversal = [] 
+    def dfs_util(node): 
+        visited.add(node) 
+        traversal.append(node) 
+        for neighbor in graph[node]: 
+            if neighbor not in visited: 
+                dfs_util(neighbor) 
+    dfs_util(start) 
+    return traversal 
+# Test Case 1: Connected graph 
+graph1 = { 
+    'A': ['B', 'C'], 
+    'B': ['A', 'D', 'E'], 
+    'C': ['A', 'F'], 
+    'D': ['B'], 
+    'E': ['B'], 
+    'F': ['C'] 
+} 
+print("Test Case 1: Connected graph") 
+print("BFS:", bfs(graph1, 'A')) 
+print("DFS:", dfs(graph1, 'A')) 
+# Test Case 2: Multiple branches 
+graph2 = { 
+    'A': ['B', 'C'], 
+    'B': ['E', 'F'], 
+    'C': ['D', 'G'], 
+    'D': ['H'], 
+    'E': [], 
+    'F': [], 
+    'G': [], 
+    'H': [], 
+    'I': [] 
+} 
+print("\nTest Case 2: Multiple branches") 
+print("BFS:", bfs(graph2, 'A')) 
+print("DFS:", dfs(graph2, 'A')) 
+# Test Case 3: Cyclic graph 
+graph3 = { 
+'A': ['B', 'C'], 
+'B': ['A', 'D'], 
+'C': ['A', 'D'], 
+'D': ['B', 'C'] 
+} 
+print("\nTest Case 3: Cyclic graph") 
+print("BFS:", bfs(graph3, 'A')) 
+print("DFS:", dfs(graph3, 'A')) 
+# Test Case 4: Single-node graph 
+graph4 = {'A': []} 
+print("\nTest Case 4: Single-node graph") 
+print("BFS:", bfs(graph4, 'A')) 
+print("DFS:", dfs(graph4, 'A')) 
+# Test Case 5: Disconnected graph 
+graph5 = { 
+'A': ['B'], 
+'B': ['A'], 
+'C': ['D'], 
+'D': ['C'], 
+'E': [] 
+} 
+print("\nTest Case 5: Disconnected graph") 
+print("BFS:", bfs(graph5, 'A')) 
+print("DFS:", dfs(graph5, 'A')) 
+
+
+Regression 
+
+import numpy as np 
+import pandas as pd 
+import matplotlib.pyplot as plt 
+from sklearn.linear_model import LinearRegression 
+from sklearn.metrics import mean_squared_error, r2_score 
+from sklearn.model_selection import train_test_split 
+df = pd.read_csv("salary_data.csv") 
+print("=== SALARY DATASET ===") 
+print(df.head()) 
+print("Rows:", len(df)) 
+# Input and output 
+X = df[["Experience Years"]] 
+y = df["Salary"] 
+# Train the model 
+model = LinearRegression() 
+model.fit(X, y) 
+print("\n=== TEST CASE 1 ===") 
+print("Slope:", model.coef_[0]) 
+print("Intercept:", model.intercept_) 
+print("RESULT:", "PASS" if model.coef_[0] > 0 else "FAIL") 
+# Split dataset for testing 
+X_train, X_test, y_train, y_test = train_test_split( 
+X, y, test_size=0.2, random_state=42 
+) 
+m = LinearRegression() 
+m.fit(X_train, y_train) 
+pred = m.predict(X_test) 
+print("\n=== TEST CASE 2 ===") 
+print("Actual:", y_test.values) 
+print("Predicted:", np.round(pred, 2)) 
+mse = mean_squared_error(y_test, pred) 
+r2 = r2_score(y_test, pred) 
+print("MSE:", round(mse, 2)) 
+print("R2:", round(r2, 3)) 
+print("RESULT:", "PASS" if r2 > 0.5 else "FAIL") 
+print("\n=== TEST CASE 3 ===") 
+salary_7 = model.predict(pd.DataFrame( 
+{"Experience Years": [7]} 
+))[0] 
+print("7 Years Salary:", round(salary_7, 2)) 
+print("\n=== TEST CASE 4 ===") 
+print("Constant Target Slope:", m.coef_[0]) 
+print("RESULT:", "PASS" if abs(m.coef_[0]) < 1e-6 else "FAIL") 
+print("\n=== TEST CASE 5 ===") 
+print("Normal MSE:", round(mse, 2)) 
+# Plot regression graph 
+plt.scatter(X, y, label="Data") 
+plt.plot(X, model.predict(X), label="Regression Line") 
+plt.xlabel("Experience Years") 
+plt.ylabel("Salary") 
+plt.title("Salary vs Experience") 
+plt.legend() 
+plt.show()
+
+
+astar
+
+def a_star(graph, h, start, goal): 
+    open_list = [start] 
+    closed = set() 
+    g = {start: 0} 
+    parent = {start: start} 
+ 
+    while open_list: 
+        n = min(open_list, key=lambda node: g[node] + h[node]) 
+ 
+        if n == goal: 
+            path = [] 
+            while parent[n] != n: 
+                path.append(n) 
+                n = parent[n] 
+            path.append(start) 
+            path.reverse() 
+ 
+            print("Path:", path) 
+            print("Cost:", g[goal]) 
+            return path, g[goal] 
+ 
+        open_list.remove(n) 
+        closed.add(n) 
+ 
+        for m, cost in graph[n].items(): 
+            new_cost = g[n] + cost 
+ 
+            if m not in g or new_cost < g[m]: 
+                g[m] = new_cost 
+                parent[m] = n 
+ 
+                if m in closed: 
+                    closed.remove(m) 
+ 
+                if m not in open_list: 
+                    open_list.append(m) 
+ 
+    print("Path not found") 
+    return None, float("inf") 
+ 
+ 
+# Test Case 1: Admissible heuristic 
+print("\nTest Case 1") 
+graph = { 
+    'A': {'B': 1, 'C': 3, 'G': 2}, 
+    'B': {'E': 2}, 
+    'C': {'G': 3}, 
+    'E': {'G': 3}, 
+    'G': {} 
+} 
+h = {'A': 2, 'B': 3, 'C': 1, 'E': 1, 'G': 0} 
+a_star(graph, h, 'A', 'G') 
+ 
+# Test Case 2: Multiple possible paths 
+print("\nTest Case 2") 
+graph = { 
+'S': {'A': 2, 'B': 3}, 
+'A': {'G': 4}, 
+'B': {'G': 3}, 
+'G': {} 
+} 
+h = {'S': 5, 'A': 4, 'B': 2, 'G': 0} 
+a_star(graph, h, 'S', 'G') 
+# Test Case 3: Direct start-goal connection 
+print("\nTest Case 3") 
+graph = { 
+'A': {'G': 2}, 
+'G': {} 
+} 
+h = {'A': 1, 'G': 0} 
+a_star(graph, h, 'A', 'G') 
+# Test Case 4: Goal not found 
+print("\nTest Case 4") 
+graph = { 
+'A': {'B': 2}, 
+'B': {}, 
+'G': {} 
+} 
+h = {'A': 2, 'B': 1, 'G': 0} 
+a_star(graph, h, 'A', 'G') 
+# Test Case 5: Misleading heuristic 
+print("\nTest Case 5") 
+graph = { 
+'S': {'A': 1, 'B': 2}, 
+'A': {'G': 10}, 
+'B': {'G': 3}, 
+'G': {} 
+} 
+h = {'S': 0, 'A': 0, 'B': 100, 'G': 0} 
+a_star(graph, h, 'S', 'G') 
