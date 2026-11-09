@@ -1,354 +1,614 @@
- weeek6
- 
- @relation Iris
+BFS AND DFS
 
-@attribute sepallength REAL
-@attribute sepalwidth REAL
-@attribute petallength REAL
-@attribute petalwidth REAL
+from collections import deque
 
-@attribute class {Iris-setosa,Iris-versicolor,Iris-virginica}
+def bfs(graph, start):
+    visited = {start}
+    queue = deque([start])
+    traversal = []
 
-@data
-5.1,3.5,1.4,0.2,Iris-setosa
-4.9,3.0,1.4,0.2,Iris-setosa
-4.7,3.2,1.3,0.2,Iris-setosa
-4.6,3.1,1.5,0.2,Iris-setosa
-5.0,3.6,1.4,0.2,Iris-setosa
-5.4,3.9,1.7,0.4,Iris-setosa
-4.6,3.4,1.4,0.3,Iris-setosa
-5.0,3.4,1.5,0.2,Iris-setosa
-4.4,2.9,1.4,0.2,Iris-setosa
-4.9,3.1,1.5,0.1,Iris-setosa
+    while queue:
+        node = queue.popleft()
+        traversal.append(node)
 
-Week1,week7 
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                visited.add(neighbor)
+                queue.append(neighbor)
 
-@relation Student 
-@attribute age { <30, 30-40, >40 } 
-@attribute income { low, medium, high } 
-@attribute student { yes, no } 
-@attribute credit_rating { fair, excellent } 
-@attribute marks numeric 
-@attribute buysPC { yes, no } 
-@data 
-<30, high, no, fair, 80, no 
-<30, high, no, excellent, 40, no 
-30-40, high, no, fair, 65, yes 
->40, medium, no, fair, 90, yes 
->40, low, yes, excellent, 99, no 
->40, low, yes, fair, 60, yes 
-30-40, low, yes, excellent, 70, yes 
-<30, medium, no, fair, 75, no 
-<30, low, yes, fair, 80, no 
->40, medium, yes, fair, 55, yes 
->40, medium, yes, excellent, 88, yes 
-30-40, medium, no, excellent, 78, yes 
-30-40, high, yes, fair, 45, yes 
->40, medium, no, excellent, 40, no
+    return traversal
 
 
-Week2,3 
-@relation Contact_lenses 
-@attribute age {young, pre-presbyopic, presbyopic} 
-@attribute spectacle-prescrip {myope, hypermetrope} 
-@attribute astigmatism {no, yes} 
-@attribute tear-prod-rate {reduced, normal} 
-@attribute contact-lenses {soft, hard, none} 
-@data 
-young, myope, no, reduced, none 
-young, myope, no, normal, soft 
-young, myope, yes, reduced, none 
-young, myope, yes, normal, hard 
-young, hypermetrope, no, reduced, none 
-young, hypermetrope, no, normal, soft 
-young, hypermetrope, yes, reduced, none 
-young, hypermetrope, yes, normal, hard 
-pre-presbyopic, myope, no, reduced, none 
-pre-presbyopic, myope, no, normal, soft 
-pre-presbyopic, myope, yes, reduced, none 
-pre-presbyopic, myope, yes, normal, hard 
-pre-presbyopic, hypermetrope, no, reduced, none 
-pre-presbyopic, hypermetrope, no, normal, soft 
-pre-presbyopic, hypermetrope, yes, reduced, none 
-pre-presbyopic, hypermetrope, yes, normal, hard 
-presbyopic, myope, no, reduced, none 
-presbyopic, myope, no, normal, none 
-presbyopic, myope, yes, reduced, none 
-presbyopic, myope, yes, normal, hard 
-presbyopic, hypermetrope, no, reduced, none 
-presbyopic, hypermetrope, no, normal, soft 
-presbyopic, hypermetrope, yes, reduced, none 
-presbyopic, hypermetrope, yes, normal, none 
+def dfs(graph, start):
+    visited = set()
+    traversal = []
+
+    def dfs_util(node):
+        visited.add(node)
+        traversal.append(node)
+
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                dfs_util(neighbor)
+
+    dfs_util(start)
+    return traversal
 
 
+# Test Case 1: Connected graph
+graph1 = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B'],
+    'F': ['C']
+}
 
-week4 
-@relation Emp 
-@attribute Age {20,30,40,50} 
-@attribute Dept {cse,ece,csd,csm} 
-@attribute Experience {3,4,5,6} 
-@attribute Salary {50000,60000,70000,80000} 
-@attribute Attendance {50,60,75,90} 
-@attribute Performance {good,avg,poor} 
-@data 
-20,cse,3,50000,50,poor 
-30,ece,4,60000,75,avg 
-40,cse,5,70000,60,good 
-50,csm,6,80000,90,good 
-20,csd,4,50000,75,avg 
-50,cse,6,80000,90,good 
-20,csm,4,60000,75,avg 
-50,ece,6,50000,60,avg 
-40,cse,4,70000,75,good 
-30,csm,3,50000,90,poor 
+print("Test Case 1: Connected graph")
+print("BFS:", bfs(graph1, 'A'))
+print("DFS:", dfs(graph1, 'A'))
+
+
+# Test Case 2: Multiple branches
+graph2 = {
+    'A': ['B', 'C'],
+    'B': ['E', 'F'],
+    'C': ['D', 'G'],
+    'D': ['H'],
+    'E': [], 'F': [], 'G': [], 'H': [], 'I': []
+}
+
+print("\nTest Case 2: Multiple branches")
+print("BFS:", bfs(graph2, 'A'))
+print("DFS:", dfs(graph2, 'A'))
+
+
+# Test Case 3: Cyclic graph
+graph3 = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D'],
+    'C': ['A', 'D'],
+    'D': ['B', 'C']
+}
+
+print("\nTest Case 3: Cyclic graph")
+print("BFS:", bfs(graph3, 'A'))
+print("DFS:", dfs(graph3, 'A'))
+
+
+# Test Case 4: Single-node graph
+graph4 = {'A': []}
+
+print("\nTest Case 4: Single-node graph")
+print("BFS:", bfs(graph4, 'A'))
+print("DFS:", dfs(graph4, 'A'))
+
+
+# Test Case 5: Disconnected graph
+graph5 = {
+    'A': ['B'], 'B': ['A'],
+    'C': ['D'], 'D': ['C'], 'E': []
+}
+
+print("\nTest Case 5: Disconnected graph")
+print("BFS:", bfs(graph5, 'A'))
+print("DFS:", dfs(graph5, 'A'))
 
 
 
-Week5 
-@relation Employee 
-@attribute Age {Young, Middle, Senior} 
-@attribute Department {IT, HR, Finance, Sales} 
-@attribute Experience {Low, Medium, High} 
-@attribute Salary {Low, Medium, High} 
-@attribute Attendance {Poor, Average, Good} 
-@attribute Performance {Poor, Average, Good} 
-@data 
-Young, IT, Low, Low, Poor, Poor 
-Middle, HR, Medium, Medium, Average, Average 
-Senior, Finance, High, High, Good, Good 
-Young, Sales, Medium, High, Good, Average 
-Senior, HR, High, High, Average, Good 
-Middle, Finance, Low, Medium, Poor, Average 
-Young, HR, Low, Low, Poor, Poor 
-Middle, Sales, Medium, High, Poor, Good 
-Senior, IT, High, High, Average, Good 
-Young, Sales, Medium, Low, Poor, Average
+SVM
+
+from sklearn.datasets import load_iris
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import numpy as np
+import matplotlib.pyplot as plt
+
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# TC1: Two classes
+X1, y1 = X[y != 2], y[y != 2]
+model1 = SVC(kernel="linear")
+model1.fit(X1, y1)
+print("TC1 Accuracy:", accuracy_score(y1, model1.predict(X1)))
+
+# TC2: Train-test split
+X_train, X_test, y_train, y_test = train_test_split(
+    X1, y1, test_size=0.2, random_state=42
+)
+model2 = SVC(kernel="linear")
+model2.fit(X_train, y_train)
+print("TC2 Accuracy:", accuracy_score(y_test, model2.predict(X_test)))
+
+# TC3: Predict one sample
+model3 = SVC(kernel="linear")
+model3.fit(X1, y1)
+point = X1[0].reshape(1, -1)
+print("TC3 Predicted class:", model3.predict(point)[0])
+print("TC3 Decision value:", model3.decision_function(point)[0])
+
+# TC4: Add noise
+rng = np.random.default_rng(42)
+Xu = X1 + rng.normal(0, 0.8, X1.shape)
+model4 = SVC(kernel="linear")
+model4.fit(Xu, y1)
+print("TC4 Accuracy:", accuracy_score(y1, model4.predict(Xu)))
+
+# TC5: Single class
+X5, y5 = X[y == 0], y[y == 0]
+try:
+    model5 = SVC(kernel="linear")
+    model5.fit(X5, y5)
+except ValueError:
+    print("TC5: SVM needs at least two classes.")
+
+# Graphical representation
+Xg = X1[:, [0, 1]]
+graph_model = SVC(kernel="linear")
+graph_model.fit(Xg, y1)
+
+plt.scatter(Xg[y1 == 0, 0], Xg[y1 == 0, 1], label="Class 0")
+plt.scatter(Xg[y1 == 1, 0], Xg[y1 == 1, 1], label="Class 1")
+
+xx = np.linspace(Xg[:, 0].min(), Xg[:, 0].max(), 100)
+w = graph_model.coef_[0]
+b = graph_model.intercept_[0]
+yy = -(w[0] * xx + b) / w[1]
+
+plt.plot(xx, yy, label="Hyperplane")
+plt.xlabel("Sepal Length")
+plt.ylabel("Sepal Width")
+plt.title("SVM Classification")
+plt.legend()
+plt.grid()
+plt.show()
 
 
-Week 11 
-1. Normal Distribution –
-2. dnorm() 
-x <- seq(-10, 10, by = 0.1) 
-y <- dnorm(x, mean = 2.0, sd = 1.5) 
-plot(x, y, main = "Density Normal Distribution", 
-xlab = "x", ylab = "Density", type = "l") 
-model <- lm(y ~ x) 
-abline(model, col = "red", lwd = 2)
- 
-4. Normal Distribution – pnorm() 
-x <- seq(-10, 10, by = 0.1) 
-y <- pnorm(x, mean = 2.0, sd = 0.5) 
-plot(x, y, main = "Cumulative Normal Distribution", 
-xlab = "x", ylab = "Cumulative Probability", type = "l") 
-model <- lm(y ~ x) 
-abline(model, col = "red", lwd = 2)
-
-6. Normal Distribution – qnorm() 
-x <- seq(0, 1, by = 0.02) 
-y <- qnorm(x, mean = 2, sd = 1) 
-plot(x, y, main = "Quantile Normal Distribution", 
-xlab = "Probability", ylab = "Quantile", type = "l") 
-model <- lm(y ~ x) 
-abline(model, col = "red", lwd = 2)
-
-8. Normal Distribution – rnorm() 
-y <- rnorm(50) 
-hist(y, main = "rnorm", xlab = "Values", col = "blue")
-
-10. Binomial Distribution – dbinom() 
-x <- seq(0, 50, by = 1) 
-y <- dbinom(x, size = 50, prob = 0.5) 
-plot(x, y, main = "Binomial Distribution", 
-xlab = "Number of Successes", ylab = "Probability", 
-type = "h")
-
-12. Binomial Distribution – pbinom() 
-x <- 0:51 
-y <- pbinom(x, size = 51, prob = 0.5) 
-plot(x, y, main = "Cumulative Binomial Distribution", 
-xlab = "Number of Successes", ylab = "Cumulative Probability", 
-type = "s")
-
-14. Binomial Distribution – qbinom() 
-x <- qbinom(8, size = 150, prob = 0.4) 
-print(x) 
-plot(x)
-
-rbinom:
-x <- qbinom(0.25, size = 51, prob = 0.5) 
-print(x) 
-plot(x, main = "Binomial Quantile")
-
-week8 
-# Mean 
-x <- c(10, 20, 30, 40, 50) 
-result <- mean(x) 
-print(result) 
-# Median 
-x <- c(10, 20, 30, 40, 50) 
-result <- median(x) 
-print(result) 
-# Mode (user-defined function) 
-getmode <- function(a) { 
-uniq_a <- unique(a) 
-uniq_a[which.max(tabulate(match(a, uniq_a)))] 
-} 
-a <- c(10, 20, 10, 30, 20, 10, 40) 
-result <- getmode(a) 
-print(result) 
-# Covariance 
-x <- c(10, 20, 30, 40) 
-y <- c(50, 60, 70, 80) 
-result <- cov(x, y) 
-print(result) 
-boxplot(x, y, names = c("x", "y"), main = "Boxplot of x and y") 
-# Linear regression 
-x <- c(10, 20, 30, 40) 
-y <- c(50, 60, 70, 80) 
-result <- lm(y ~ x) 
-print(result) 
-plot(x, y, main = "Linear Regression", xlab = "x", ylab = "y", pch = 20) 
-abline(result, col = "red", lwd = 2) 
 
 
-week 9 
-2. Linear Regression 
-stdhrs <- c(1, 2, 3, 4, 5) 
-marks <- c(30, 40, 50, 60, 70) 
-student <- data.frame(stdhrs, marks) 
-print(student) 
-model <- lm(marks ~ stdhrs, data = student) 
-print(summary(model)) 
-plot(stdhrs, marks, 
-main = "Linear Regression", 
-xlab = "Study Hours", ylab = "Marks", 
-pch = 20, col = "blue") 
-abline(model, col = "red", lwd = 2) 
-# Predict marks for the given study hours 
-new_student <- data.frame(stdhrs = c(6, 7)) 
-print(predict(model, newdata = new_student)) 
-
-3. Multiple Linear Regression 
-experience <- c(1, 2, 3, 4, 5) 
-qualification <- factor(c("SSC", "BTech", "MTech", "PhD", "MPhil")) 
-salary <- c(1, 2, 3, 4, 5) 
-employee <- data.frame(experience, qualification, salary) 
-print(employee) 
-model <- lm(salary ~ experience + qualification, data = employee) 
-print(summary(model)) 
-plot(employee$experience, employee$salary, 
-main = "Experience vs Salary", 
-xlab = "Experience (years)", ylab = "Salary", 
-pch = 20, col = "purple") 
-abline(lm(salary ~ experience, data = employee), col = "red", lwd = 2) 
-
-4. Logistic Regression 
-students <- data.frame( 
-studyhours = c(1, 2, 3, 4, 5, 6, 7, 8), 
-pass = c(0, 0, 0, 1, 1, 1, 1, 1) 
-) 
-model <- glm(pass ~ studyhours, data = students, family = binomial()) 
-print(summary(model)) 
-students$probability <- predict(model, type = "response") 
-students$prediction <- ifelse(students$probability >= 0.5, 1, 0) 
-print(students) 
-plot(students$studyhours, students$probability, 
-main = "Logistic Regression", 
-xlab = "Study Hours", ylab = "Probability of Passing", 
-pch = 19) 
-lines(students$studyhours, students$probability, lwd = 2) 
-
-5. Poisson Regression
-   
-hrs <- c(1, 2, 3, 4, 5, 6, 7, 8) 
-ques <- c(2, 3, 4, 6, 8, 10, 13, 16) 
-data <- data.frame(hrs, ques) 
-print(data) 
-model <- glm(ques ~ hrs, family = poisson(), data = data) 
-print(summary(model)) 
-predicted <- predict(model, type = "response") 
-print(predicted) 
-plot(data$hrs, data$ques, 
-pch = 19, xlab = "Study Hours", 
-ylab = "Questions Answered", 
-main = "Poisson Regression") 
-lines(data$hrs, predicted, lwd = 2) 
 
 
-week10 
 
-Time Series Analysis 
-
-sales <- c(100, 200, 300, 400, 500, 600, 700, 800, 900, 1000) 
-sales_ts <- ts(sales, frequency = 12) 
-print(sales_ts) 
-plot(sales_ts, type = "o", 
-main = "Time Series Analysis", 
-xlab = "Months", ylab = "Sales", lwd = 2) 
-
-7. Nonlinear Least-Squares Regression 
-year <- c(1, 2, 3, 4, 5, 6) 
-population <- c(100, 110, 125, 140, 160, 185) 
-model <- nls(population ~ a * exp(b * year), 
-start = list(a = 90, b = 0.1)) 
-print(summary(model)) 
-predicted <- predict(model) 
-print(predicted) 
-plot(year, population, pch = 19, 
-main = "Population Growth (Nonlinear Regression)", 
-xlab = "Year", ylab = "Population (thousands)") 
-lines(year, predicted, lwd = 2) 
-new_year <- data.frame(year = 8) 
-predicted_8 <- predict(model, newdata = new_year) 
-print(predicted_8) 
-
-8. Decision Tree Modeling (Regression Tree) 
-if(!require(rpart) install.packages("rpart")
-if(!require(rpart.plot) install.packages("rpart.plot")
-library(rpart) 
-library(rpart.plot) 
-data(mtcars) 
-reg_tree <- rpart(mpg ~ hp + wt, 
-method = "anova", 
-data = mtcars) 
-rpart.plot(reg_tree, type = 2, digits = 3, 
-fallen.leaves = TRUE, 
-main = "Regression Decision Tree (Predicting MPG)")
+A*
 
 
-week12\
+def a_star(graph, h, start, goal):
+    open_list = [start]
+    closed = set()
+    g = {start: 0}
+    parent = {start: start}
 
-Chi-Square Test:
-library(MASS)
-data(Cars93)
-str(Cars93)
-car = data.frame(Cars93$AirBags, Cars93$Type)
-car = table(Cars93$AirBags, Cars93$Type)
-print(car)
-mosaicplot(car, main="AirBags vs Car Type",
-           col=rainbow(3))
-print(chisq.test(car))
+    while open_list:
+        n = min(open_list, key=lambda x: g[x] + h[x])
 
-T-TEST:
-x = c(0.593, 0.142, 0.329, 0.691, 0.231, 0.793, 0.392, 0.418)
-result = t.test(x, alternative="greater", mu=0.3)
-print(result)
-hist(x, probability=TRUE,
-     main="One-Sample t-Test",
-     xlab="Sample Values",
-     ylab="Density",
-     col="lightblue",
-     border="green")
+        if n == goal:
+            path = []
+            current = n
 
-F-TEST
-x = c(66, 67, 75, 76, 82, 84, 88, 90, 92)
-y = c(64, 66, 74, 78, 82, 85, 87, 92, 93, 95, 97)
-result = var.test(x, y)
-print(result)
-boxplot(x, y, names=c("Group X", "Group Y"),
-        main="Comparison of Variances",
-        xlab="Groups",
-        ylab="Values",
-        col=c("lightblue", "lightgreen"))
+            while parent[current] != current:
+                path.append(current)
+                current = parent[current]
+
+            path.append(start)
+            path.reverse()
+
+            print("Path:", path)
+            print("Cost:", g[goal])
+            return path, g[goal]
+
+        open_list.remove(n)
+        closed.add(n)
+
+        for m, cost in graph[n].items():
+            new_cost = g[n] + cost
+
+            if m not in g or new_cost < g[m]:
+                g[m] = new_cost
+                parent[m] = n
+
+                if m in closed:
+                    closed.remove(m)
+
+                if m not in open_list:
+                    open_list.append(m)
+
+    print("Path not found")
+    return None, float("inf")
+
+
+# Test Case 1
+print("Test Case 1")
+graph = {
+    'A': {'B': 1, 'C': 3, 'G': 2},
+    'B': {'E': 2},
+    'C': {'G': 3},
+    'E': {'G': 3},
+    'G': {}
+}
+h = {'A': 2, 'B': 3, 'C': 1, 'E': 1, 'G': 0}
+a_star(graph, h, 'A', 'G')
+
+
+# Test Case 2
+print("\nTest Case 2")
+graph = {
+    'S': {'A': 2, 'B': 3},
+    'A': {'G': 4},
+    'B': {'G': 3},
+    'G': {}
+}
+h = {'S': 5, 'A': 4, 'B': 2, 'G': 0}
+a_star(graph, h, 'S', 'G')
+
+
+# Test Case 3
+print("\nTest Case 3")
+graph = {'A': {'G': 2}, 'G': {}}
+h = {'A': 1, 'G': 0}
+a_star(graph, h, 'A', 'G')
+
+
+# Test Case 4
+print("\nTest Case 4")
+graph = {'A': {'B': 2}, 'B': {}, 'G': {}}
+h = {'A': 2, 'B': 1, 'G': 0}
+a_star(graph, h, 'A', 'G')
+
+
+# Test Case 5
+print("\nTest Case 5")
+graph = {
+    'S': {'A': 1, 'B': 2},
+    'A': {'G': 10},
+    'B': {'G': 3},
+    'G': {}
+}
+h = {'S': 0, 'A': 0, 'B': 100, 'G': 0}
+a_star(graph, h, 'S', 'G')
+
+
+
+Back Propagation Algorithm
+
+
+ import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.neural_network import MLPRegressor
+from sklearn.metrics import mean_squared_error
+
+def show(title, X, y, hidden=3, lr=0.1, epochs=10000):
+    print("\n", title)
+    m = MLPRegressor(hidden_layer_sizes=(hidden,),
+                     learning_rate_init=lr,
+                     max_iter=epochs, random_state=42)
+    m.fit(X, y)
+    p = m.predict(X)
+    print("Actual:", y)
+    print("Predicted:", np.round(p, 2))
+    return m, p
+
+# TC1: XOR Dataset
+X1 = np.array([[0,0], [0,1], [1,0], [1,1]])
+y1 = np.array([0,100,100,0])
+show("TC1: XOR DATASET", X1, y1)
+
+# TC2: Small Neural Network
+X = np.array([[2,9], [1,5], [3,6]])
+y = np.array([92,86,89])
+show("TC2: SMALL NETWORK", X, y, hidden=1)
+
+# TC3: Training Error
+m, p = show("TC3: TRAINING ERROR", X, y)
+loss = m.loss_curve_
+print("Final MSE:", round(mean_squared_error(y, p), 6))
+
+plt.plot(loss)
+plt.xlabel("Epochs")
+plt.ylabel("Training Loss")
+plt.title("Training Error Reduction")
+plt.grid()
+plt.show()
+
+# TC4: Very High Learning Rate
+print("\nTC4: VERY HIGH LEARNING RATE")
+m, p = show("HIGH LEARNING RATE", X, y, lr=10)
+print("Learning Rate:", 10)
+print("Result: A very high learning rate can make training unstable.")
+
+# TC5: Zero Epochs
+print("\nTC5: ZERO EPOCHS")
+try:
+    m = MLPRegressor(max_iter=0, random_state=42)
+    m.fit(X, y)
+except ValueError as e:
+    print("Error:", e)
+
+print("\nAll 5 test cases completed")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+4.implement Knowledge Representation
+
+
+from sympy import symbols, Not, Implies, Xor, satisfiable
+
+Rain, Hagrid, Dumbledore = symbols('Rain Hagrid Dumbledore')
+
+def run_test(name, kb):
+    print("\n" + name)
+    result = satisfiable(kb)
+    print("Satisfiable:", result)
+
+    if result is False:
+        print("Contradiction")
+    elif Rain in result:
+        print("It rained today." if result[Rain]
+              else "There is no rain today.")
+    else:
+        print("Rain cannot be determined.")
+
+base = Implies(Not(Rain), Hagrid) & Xor(Hagrid, Dumbledore)
+
+# TC1
+kb1 = base & Dumbledore
+run_test("TEST CASE 1", kb1)
+
+# TC2
+kb2 = base & Hagrid & Not(Rain)
+run_test("TEST CASE 2", kb2)
+
+# TC3
+kb3 = base & Hagrid & Dumbledore
+run_test("TEST CASE 3", kb3)
+
+# TC4
+kb4 = base & Rain
+run_test("TEST CASE 4", kb4)
+
+# TC5
+kb5 = base & Not(Hagrid) & Not(Dumbledore)
+run_test("TEST CASE 5", kb5)
+
+print("\nAll 5 test cases completed")
+
+
+09 K-Means Clustering algorithm
+
+
+from sklearn import datasets
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+
+X = datasets.load_iris().data
+plt.figure(figsize=(12, 7))
+
+# TC1: 2 Clusters
+m1 = KMeans(n_clusters=2, random_state=0, n_init=10).fit(X)
+plt.subplot(2, 2, 1)
+plt.scatter(X[:, 2], X[:, 3], c=m1.labels_)
+plt.title("TC1: 2 Clusters")
+
+# TC2: 3 Clusters
+m2 = KMeans(n_clusters=3, random_state=0, n_init=10).fit(X)
+plt.subplot(2, 2, 2)
+plt.scatter(X[:, 2], X[:, 3], c=m2.labels_)
+plt.title("TC2: 3 Clusters")
+
+# TC3: Convergence
+print("TC3: Iterations:", m2.n_iter_)
+print("Centroids:\n", m2.cluster_centers_)
+plt.subplot(2, 2, 3)
+plt.scatter(X[:, 2], X[:, 3], c=m2.labels_)
+plt.title("TC3: Converged")
+
+# TC4: K > Data Points
+print("\nTC4: K > Data Points")
+try:
+    KMeans(n_clusters=4).fit(X[:3])
+except ValueError as e:
+    print("Error:", e)
+
+# TC5: Duplicate Points
+D = [[1,2], [1,2], [3,4], [3,4], [5,6]]
+m5 = KMeans(n_clusters=3, random_state=0, n_init=10).fit(D)
+print("\nTC5: Labels:", m5.labels_)
+print("Centroids:\n", m5.cluster_centers_)
+
+plt.subplot(2, 2, 4)
+plt.scatter([i[0] for i in D], [i[1] for i in D], c=m5.labels_)
+plt.title("TC5: Duplicate Points")
+
+plt.tight_layout()
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Bayesian Network.
+
+
+P_burglary = 0.002
+P_earthquake = 0.001
+
+P_alarm = {
+    (True, True): 0.94,
+    (True, False): 0.95,
+    (False, True): 0.31,
+    (False, False): 0.001
+}
+
+P_david = {True: 0.91, False: 0.05}
+P_sophia = {True: 0.75, False: 0.02}
+
+
+def joint_probability(a, b, e, d, s):
+    if any(type(x) != bool for x in [a, b, e, d, s]):
+        return "Invalid input"
+
+    if len(P_alarm) != 4:
+        return "Missing CPT values"
+
+    probs = [P_burglary, P_earthquake] + list(P_alarm.values()) + list(P_david.values()) + list(P_sophia.values())
+
+    if any(not 0 <= p <= 1 for p in probs):
+        return "Invalid probability"
+
+    pa = P_alarm[(b, e)] if a else 1 - P_alarm[(b, e)]
+    pd = P_david[a] if d else 1 - P_david[a]
+    ps = P_sophia[a] if s else 1 - P_sophia[a]
+
+    return (P_burglary if b else 1 - P_burglary) * \
+           (P_earthquake if e else 1 - P_earthquake) * pa * pd * ps
+
+
+# TC1
+print("TEST CASE 1")
+print("Joint Probability =", f"{joint_probability(True,False,False,True,True):.10f}")
+
+# TC2
+print("\nTEST CASE 2")
+print("Joint Probability =", f"{joint_probability(True,True,False,True,True):.10f}")
+
+# TC3
+print("\nTEST CASE 3")
+print("Joint Probability =", f"{joint_probability(True,False,True,True,False):.10f}")
+
+# TC4: Missing CPT
+print("\nTEST CASE 4")
+temp = P_alarm.pop((False,False))
+print("Result =", joint_probability(True,False,False,True,True))
+P_alarm[(False,False)] = temp
+
+# TC5: Invalid Probability
+print("\nTEST CASE 5")
+temp = P_alarm[(True,True)]
+P_alarm[(True,True)] = 1.5
+print("Result =", joint_probability(True,True,True,True,True))
+P_alarm[(True,True)] = temp
+
+print("\nAll 5 test cases completed")
+
+
+
+ID3 algorithm.
+
+
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier, export_text
+from sklearn.preprocessing import LabelEncoder
+
+def run(data, features, name):
+    if not data:
+        raise ValueError("Empty dataset")
+
+    df = pd.DataFrame(data, columns=features + ["Play"])
+
+    for col in df.columns:
+        df[col] = LabelEncoder().fit_transform(df[col])
+
+    X, y = df[features], df["Play"]
+    m = DecisionTreeClassifier(criterion="entropy")
+    m.fit(X, y)
+
+    print("\n", name)
+    print("Accuracy:", m.score(X, y) * 100, "%")
+    print(export_text(m, feature_names=features))
+
+
+# TC1: Play Tennis
+play_tennis = [
+    ["Sunny","Hot","High","Weak","No"],
+    ["Sunny","Hot","High","Strong","No"],
+    ["Overcast","Hot","High","Weak","Yes"],
+    ["Rain","Mild","High","Weak","Yes"],
+    ["Rain","Cool","Normal","Weak","Yes"],
+    ["Rain","Cool","Normal","Strong","No"],
+    ["Overcast","Cool","Normal","Strong","Yes"],
+    ["Sunny","Mild","High","Weak","No"],
+    ["Sunny","Cool","Normal","Weak","Yes"],
+    ["Rain","Mild","Normal","Weak","Yes"],
+    ["Sunny","Mild","Normal","Strong","Yes"],
+    ["Overcast","Mild","High","Strong","Yes"],
+    ["Overcast","Hot","Normal","Weak","Yes"],
+    ["Rain","Mild","High","Strong","No"]
+]
+
+run(play_tennis, ["Weather","Temperature","Humidity","Wind"], "TC1: Play Tennis")
+
+
+# TC2: Clear Class Separation
+clear_data = [
+    ["Red","Yes"], ["Red","Yes"], ["Red","Yes"],
+    ["Blue","No"], ["Blue","No"]
+]
+run(clear_data, ["Color"], "TC2: Clear Separation")
+
+
+# TC3: Mixed Attributes
+mixed_data = [
+    ["Young","High","Yes"],
+    ["Young","Low","No"],
+    ["Middle","High","Yes"],
+    ["Middle","Low","Yes"],
+    ["Old","High","Yes"],
+    ["Old","Low","No"]
+]
+run(mixed_data, ["Age","Income"], "TC3: Mixed Attributes")
+
+
+# TC4: Single Class
+single_data = [
+    ["Red","Yes"], ["Blue","Yes"], ["Green","Yes"]
+]
+run(single_data, ["Color"], "TC4: Single Class")
+
+
+# TC5: Empty Dataset
+print("\nTC5: EMPTY DATASET")
+try:
+    run([], ["Color"], "Empty Dataset")
+except ValueError as e:
+    print("Error:", e)
+
+print("\nAll 5 test cases completed")
+
 
 
